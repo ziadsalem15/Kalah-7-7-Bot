@@ -11,13 +11,15 @@ public class Tree
 
   private final Board board;
   private int depth;
-
+  public int upperBound;
+  public int lowerBound;
   // Constructor
-  public Tree(Board board, Tree parent)
+  public Tree(Board board, Tree parent, int lowerBound, int upperBound)
   {
     // TODO: Set the heuristic score
     children = new ArrayList<Tree>();
-
+    upperBound = Integer.MAX_VALUE;
+    lowerBound = Integer.MIN_VALUE;
     // You shouldn't be able to change those values.
     this.parent = parent;
     this.board = board;
