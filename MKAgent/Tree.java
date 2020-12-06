@@ -11,18 +11,18 @@ public class Tree
 
   private final Board board;
   private int depth;
-  public int upperBound;
-  public int lowerBound;
+  private Side side;
+
   // Constructor
-  public Tree(Board board, Tree parent, int lowerBound, int upperBound)
+  public Tree(Board board, Tree parent, Side side)
   {
     // TODO: Set the heuristic score
     children = new ArrayList<Tree>();
-    upperBound = Integer.MAX_VALUE;
-    lowerBound = Integer.MIN_VALUE;
+
     // You shouldn't be able to change those values.
     this.parent = parent;
     this.board = board;
+    this.side = side;
 
     setDepth(parent);
   }
@@ -72,9 +72,9 @@ public class Tree
     return heuristicScore;
   } // getRoot
 
-  public Iterator<Tree> getChildren()
+  public ArrayList<Tree> getChildren()
   {
-    return children.iterator();
+    return new ArrayList<Tree>(children);
   } // getChildren
 
   public Tree getParent()
@@ -91,5 +91,10 @@ public class Tree
   {
     return depth;
   } // getDepth
+
+  public Side getSide()
+  {
+    return side;
+  } // getSide
 
 } // class Tree

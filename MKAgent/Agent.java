@@ -1,3 +1,5 @@
+package MKAgent;
+
 public class Agent
 {
   public final int DEPTH = 10;
@@ -7,13 +9,18 @@ public class Agent
 
   public void runMinMax(Side currentSide) throws Exception
   {
-    Board newboard = this.board.clone();
-    new BestMove(0, 0.0D);
+    // Board newboard = this.board.clone();
+    // new BestMove(0, 0.0D);
     long startTime = System.currentTimeMillis();
     long timeLimit = 20000L;
     Minimax nextMove = new Minimax(currentSide, startTime, timeLimit);
     BestMove optimalMove = nextMove.runMove();
-    Kalah.makeMove(this.board, new Move(currentSide, optimalMove.hole));
+
+    if(kalah.isLegalMove(optimalMove) && !kalah.gameOver())
+      kalah.makeMove(this.board, new Move(currentSide, optimalMove.hole));
+    else
+      throw new IllegalArgumentException("You are performing an illegal move!");
+
     Main.sendMsg(Protocol.createMoveMsg(optimalMove.hole));
   }
 

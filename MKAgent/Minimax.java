@@ -1,3 +1,5 @@
+package MKAgent;
+
 public class Minimax
 {
 
@@ -5,35 +7,38 @@ public class Minimax
   //       Add heuristics and optimise the search.
 
   public Side ourSide;
-  public Tree tempNode;
-  public Tree bestValue;
+  public int tempValue;
+  public int bestValue;
   public long startTime;
-   public long limitTime;
+  public long limitTime;
+
   public Minimax(Side side, long stTime, long timeLimit)
   {
     this.ourSide = side;
     this.startTime = stTime;
     this.limitTime = timeLimit;
   }
-  public Tree minimax(Tree node, int alpha, int beta)
+  
+  public int minimax(Tree node, int alpha, int beta)
   {
-    if(node.children.isEmpty())
+    if(node.getChildren().isEmpty())
     {
-      return node.value;
+      return node.getHeuristicScore();
     }
     else
     {
       // if our side then its a maximizing node
-      if(node.side == ourSide)
+      if(node.getSide() == ourSide)
       {
         // we update alpha
-        bestValue.value = Integer.MIN_VALUE;
+        bestValue = Integer.MIN_VALUE;
+
         // checking it it has childeren
-        while(node.getChildren().hasNext())
+        for(Tree child : node.getChildren())
         {
-          tempNode = minimax(node.getChildren().next(), alpha,beta);
-          bestValue.value = Math.max(bestValue.value, tempNode);
-          alpha = Math.max(alpha, bestValue.value);
+          tempValue = minimax(child, alpha, beta);
+          bestValue = Math.max(bestValue, tempValue);
+          alpha = Math.max(alpha, bestValue);
           if (beta <= alpha)
             break;
           }
@@ -43,12 +48,13 @@ public class Minimax
         {
           // udpating beta
           bestValue = Integer.MAX_VALUE;
+
           // checking it it has childeren
-          while(node.getChildren().hasNext())
+          for(Tree child : node.getChildren())
           {
-            tempNode = minimax(node.getChildren().next(), alpha,beta);
-            bestValue.value = Math.min(bestValue.value, tempNode);
-            beta = Math.min(beta, bestValue.value);
+            tempValue = minimax(child, alpha, beta);
+            bestValue = Math.min(bestValue, tempValue);
+            beta = Math.min(beta, bestValue);
             if (beta <= alpha)
               break;
           }
@@ -59,6 +65,6 @@ public class Minimax
 
   public BestMove runMove()
   {
-    
+
   }
 }  // class Minimax
