@@ -18,10 +18,12 @@ public class Minimax
     this.startTime = stTime;
     this.limitTime = timeLimit;
   }
-  public int evaluate(Heuristics heuristicValue)
-  {
-    return heuristicValue.heuristic(this.ourSide);
-  }
+
+  // public int evaluate(Heuristics heuristicValue)
+  // {
+  //   return heuristicValue.heuristic(this.ourSide);
+  // }
+
   public int minimax(Tree node, int alpha, int beta)
   {
     if(node.getChildren().isEmpty())
