@@ -12,6 +12,8 @@ public class Heuristics
       difference = board.getSeedsInStore(side) - board.getSeedsInStore(side.opposite());
     else
       difference = board.getSeedsInStore(side.opposite()) - board.getSeedsInStore(side);
+
+    return difference;
   }
 
   public int extraTurn(Tree tree)
@@ -54,7 +56,7 @@ public class Heuristics
         if(noOfSeeds <= 0) // we are still on our side
           endHole = noOfHoles + noOfSeeds;
         else
-          noOfSeeds = noOfSeeds - (noOfHoles + 1)
+          noOfSeeds = noOfSeeds - (noOfHoles + 1);
           if(noOfSeeds > 0) // we are back on our side
             endHole = noOfSeeds;
       } // if

@@ -68,8 +68,8 @@ public class Minimax
     }
   } // minimax
 
-  public BestMove runMove()
-  {
-
-  }
+  // public BestMove runMove()
+  // {
+  //
+  // }
 }  // class Minimax
