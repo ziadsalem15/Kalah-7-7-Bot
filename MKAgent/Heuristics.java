@@ -14,16 +14,21 @@ public class Heuristics
       difference = board.getSeedsInStore(side.opposite()) - board.getSeedsInStore(side);
   }
 
-  public static int extraTurn(Board board, Side side) {
+  public int extraTurn(Tree tree)
+  {
+    Side side = tree.getSide();
+    Board board = tree.getBoard();
+    int noOfHoles =  board.getNoOfHoles();
     int numOfExtraTurn = 0;
-    for(int hole = 1; hole < 8; hole++) {
-       if (board.getSeeds(side, hole) == 8 - hole) {
+    for(int hole = 1; hole < noOfHoles+1; hole++)
+    {
+       if ((board.getSeeds(side, hole) % 15) == ((noOfHoles+1) - hole))
+       {
           numOfExtraTurn++;
        }
     }
     return numOfExtraTurn;
    }
-
 
   private int getCapturingOportunities(Tree tree, boolean opposite)
   {
@@ -71,7 +76,8 @@ public class Heuristics
     double weights[] = {0.45, 0.05, -0.1, 0.1};
     double heuristicScore = getDifferenceBetweenWells(tree) * weights[0]
                            + getCapturingOportunities(tree, false) * weights[1]
-                           + getCapturingOportunities(tree, true) * weights[2];
+                           + getCapturingOportunities(tree, true) * weights[2]
+                           + extraTurn(tree) * weights[3];
     return heuristicScore;
   } // getHeuristicScore
 
