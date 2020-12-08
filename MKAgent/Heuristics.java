@@ -14,6 +14,17 @@ public class Heuristics
       difference = board.getSeedsInStore(side.opposite()) - board.getSeedsInStore(side);
   }
 
+  public static int extraTurn(Board board, Side side) {
+    int numOfExtraTurn = 0;
+    for(int hole = 1; hole < 8; hole++) {
+       if (board.getSeeds(side, hole) == 8 - hole) {
+          numOfExtraTurn++;
+       }
+    }
+    return numOfExtraTurn;
+   }
+
+
   private int getCapturingOportunities(Tree tree, boolean opposite)
   {
     Side side;
