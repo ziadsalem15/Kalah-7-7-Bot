@@ -2,21 +2,20 @@ package MKAgent;
 
 public class Minimax
 {
-
   // TODO: Implement minimax with alpha-beta pruning
   //       Add heuristics and optimise the search.
 
   public Side ourSide;
   public int tempValue;
   public int bestValue;
-  public long startTime;
-  public long limitTime;
+  // public long startTime;
+  // public long limitTime;
 
-  public Minimax(Side side, long stTime, long timeLimit)
+  public Minimax(Side side)
   {
     this.ourSide = side;
-    this.startTime = stTime;
-    this.limitTime = timeLimit;
+    // this.startTime = stTime;
+    // this.limitTime = timeLimit;
   }
 
   // public int evaluate(Heuristics heuristicValue)
