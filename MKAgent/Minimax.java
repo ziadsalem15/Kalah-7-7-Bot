@@ -8,26 +8,45 @@ public class Minimax
   public Side ourSide;
   public int tempValue;
   public int bestValue;
-  // public long startTime;
-  // public long limitTime;
+  private static int MINIMAX_DEPTH = 10;
+
 
   public Minimax(Side side)
   {
     this.ourSide = side;
-    // this.startTime = stTime;
-    // this.limitTime = timeLimit;
   }
 
-  // public int evaluate(Heuristics heuristicValue)
-  // {
-  //   return heuristicValue.heuristic(this.ourSide);
-  // }
+  public int advantageToSwap(Side side, Board board)
+  {
+    List<Integer> indicesOfNonEmptyHoles = board.getIndicesOfNonEmptyHoles(side);
+    int maxScore = Integer.MIN_VALUE;
 
-  public int minimax(Tree node, int alpha, int beta)
+    Iterator iteratorOnNonEmpty = indicesOfNonEmptyHoles.iterator();
+
+     while(iteratorOnNonEmpty.hasNext())
+     {
+        int index = (Integer)iteratorOnNonEmpty.next();
+        Move chMove = new Move(side, index);
+        Board chBoard = new Board(board);
+        Side chSide = Kalah.makeMove(childBoard, childMove);
+        Tree chTree = new Tree(chBoard, chSide);
+        int chScore = minimax(chTree, Integer.MIN_VALUE, Integer.MAX_VALUE, MINIMAX_DEPTH);
+        if (chScore > maxScore)
+        {
+           maxScore = chScore;
+        }
+     }
+     return maxScore;
+  }
+  public int computeBestNextMove(Board board)
+  {
+    
+  }
+  public int minimax(Tree node, int alpha, int beta, int depth)
   {
     if(node.getChildren().isEmpty())
     {
-      return node.getHeuristicScore();
+      return Heuristics.getHeuristicScore(node);
     }
     else
     {
@@ -40,7 +59,7 @@ public class Minimax
         // checking it it has childeren
         for(Tree child : node.getChildren())
         {
-          tempValue = minimax(child, alpha, beta);
+          tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
           if (beta <= alpha)
@@ -56,7 +75,7 @@ public class Minimax
           // checking it it has childeren
           for(Tree child : node.getChildren())
           {
-            tempValue = minimax(child, alpha, beta);
+            tempValue = minimax(child, alpha, beta, depth-1);
             bestValue = Math.min(bestValue, tempValue);
             beta = Math.min(beta, bestValue);
             if (beta <= alpha)
@@ -67,8 +86,4 @@ public class Minimax
     }
   } // minimax
 
-  // public BestMove runMove()
-  // {
-  //
-  // }
 }  // class Minimax

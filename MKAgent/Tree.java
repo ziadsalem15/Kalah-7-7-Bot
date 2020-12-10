@@ -27,6 +27,16 @@ public class Tree
     setDepth(parent);
   }
 
+  public Tree(Board board, Side side)
+  {
+    // TODO: Set the heuristic score
+    children = new ArrayList<Tree>();
+
+    // You shouldn't be able to change those values.
+    this.board = board;
+    this.side = side;
+  }
+
   // Set the height of the tree by looking at its
   // deepest child. A way around always keeping this
   // up to date is not having an instance variable,

@@ -25,34 +25,6 @@ public class Agent
       {
         case END:
           return;
-
-        case STATE:
-          Protocol.MoveTurn moveTurn = Protocol.interpretStateMsg(message, board);
-
-          if(moveTurn.end)
-            return;
-
-          if(moveTurn.again && moveTurn.move == -1)
-            mySide = mySide.opposite();
-
-          if(moveTurn.again)
-          {
-            if(canSwap && shouldSwap())
-            {
-              mySide = mySide.opposite();
-              Main.sendMsg(Protocol.createSwapMsg());
-            }
-            else // can swap but doesnt swap or cant swap at all.
-            {
-              if(canSwap) canSwap = false;
-
-              // Make your move
-              runMinMax();
-              Main.sendMsg(Protocol.createMoveMsg());
-            } // else
-          } // if
-          break;
-
         case START:
           boolean isStarting = Protocol.interpretStartMessage(message);
           mySide = isStarting ? Side.SOUTH : Side.NORTH;
@@ -67,6 +39,34 @@ public class Agent
             canSwap = true;
           break;
 
+        case STATE:
+          Protocol.MoveTurn moveTurn = Protocol.interpretStateMsg(message, board);
+
+          if(moveTurn.end)
+            return;
+
+          if(moveTurn.again && moveTurn.move == -1)
+            mySide = mySide.opposite();
+
+          if(moveTurn.again && !moveTurn.end)
+          {
+            if(canSwap && shouldSwap())
+            {
+              mySide = mySide.opposite();
+              Main.sendMsg(Protocol.createSwapMsg());
+              canSwap = false;
+            }
+            else // can swap but doesnt swap or cant swap at all.
+            {
+              if(canSwap) canSwap = false;
+
+              // Make your move
+              Move nextMove = runMinMax();
+              Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
+            } // else
+          } // if
+          break;
+
         default:
           System.err.println("Unknown state :(");
           break;
@@ -75,21 +75,9 @@ public class Agent
 
   } // playGame
 
-  public void runMinMax() throws Exception
+  public Move runMinMax() throws Exception
   {
-    // Board newboard = this.board.clone();
-    // new BestMove(0, 0.0D);
-    long startTime = System.currentTimeMillis();
-    long timeLimit = 20000L;
-    Minimax nextMove = new Minimax(this.side, startTime, timeLimit);
-    BestMove optimalMove = nextMove.runMove();
-
-    if(kalah.isLegalMove(optimalMove) && !kalah.gameOver())
-      kalah.makeMove(this.board, new Move(this.side, optimalMove.hole));
-    else
-      throw new IllegalArgumentException("You are performing an illegal move!");
-
-    Main.sendMsg(Protocol.createMoveMsg(optimalMove.hole));
+    return new Move(mySide, Minimax.computeBestNextMove(this.kalah.getBoard()));
   }
 
   public boolean shouldSwap()
