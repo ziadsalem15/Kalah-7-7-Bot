@@ -8,13 +8,14 @@ public class Tree
   private int heuristicScore;
   private final ArrayList<Tree> children;
   private Tree parent;
+  private int holeNumber;
 
   private final Board board;
   private int depth;
   private Side side;
 
   // Constructor
-  public Tree(Board board, Tree parent, Side side)
+  public Tree(Board board, Tree parent, Side side, int number)
   {
     // TODO: Set the heuristic score
     children = new ArrayList<Tree>();
@@ -24,6 +25,7 @@ public class Tree
     this.board = board;
     this.side = side;
 
+    holeNumber = number;
     setDepth(parent);
   }
 
@@ -62,6 +64,23 @@ public class Tree
   {
     children.add(child);
   } // addChild
+
+  public static void generateChildrenLayers(Tree tree, int noOfLayers)
+  {
+    int noOfChildren = board.getNoOfHoles();
+
+    if(noOfLayers == 1)
+      for(int i = 0; i < noOfChildren; i++)
+        tree.addChild(new Tree(board, this, side.opposite()));
+
+    else if(noOfLayers > 1)
+      for(int i = 0; i < noOfChildren; i++)
+      {
+        Tree child = new Tree(board, tree, tree.getSide().opposite());
+        tree.addChild(child);
+        generateChildrenLayers(child, noOfLayers-1);
+      } // for
+  } // generateChildren
 
   private void setDepth(Tree parentNode)
   {

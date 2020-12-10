@@ -2,12 +2,14 @@ package MKAgent;
 
 public class Agent
 {
-  public final int DEPTH = 10;
+  public final int DEPTH = 8;
   public final int DECISION_TIME;
 
   public Board board;
   public Kalah kalah;
   public Side mySide;
+
+  public Tree gameTree;
 
   public void playGame()
   {
@@ -23,16 +25,18 @@ public class Agent
 
       switch(msgType)
       {
-        case END:
-          return;
         case START:
           boolean isStarting = Protocol.interpretStartMessage(message);
           mySide = isStarting ? Side.SOUTH : Side.NORTH;
 
           if(isStarting)
           {
-            kalah.makeMove(board, new Move(mySide, 7));
-            sendMsg(Protocol.createMoveMsg(7));
+            Tree temp = new Tree(board, null, mySide);
+            gameTree = Tree.generateChildrenLayers(temp, DEPTH);
+
+            Move optimalMove = runMinMax();
+            kalah.makeMove(board, optimalMove);
+            sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
             canSwap = false;
           } // if
           else
@@ -45,8 +49,10 @@ public class Agent
           if(moveTurn.end)
             return;
 
-          if(moveTurn.again && moveTurn.move == -1)
+          if(moveTurn.again && moveTurn.move == -1) // player 1
+          {
             mySide = mySide.opposite();
+          } // if
 
           if(moveTurn.again && !moveTurn.end)
           {
@@ -55,6 +61,9 @@ public class Agent
               mySide = mySide.opposite();
               Main.sendMsg(Protocol.createSwapMsg());
               canSwap = false;
+
+              Tree temp = new Tree(board, null, mySide);
+              gameTree = Tree.generateChildrenLayers(temp, DEPTH);
             }
             else // can swap but doesnt swap or cant swap at all.
             {
@@ -66,6 +75,9 @@ public class Agent
             } // else
           } // if
           break;
+
+        case END:
+          return;
 
         default:
           System.err.println("Unknown state :(");
