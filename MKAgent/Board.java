@@ -274,9 +274,23 @@ public class Board extends Observable implements Cloneable
       for(int i = 1; i <= holes; i++)
          if (this.getSeeds(side, i) > 0)
             indicesOfNonEmptyHoles.add(i);
-						
+
       return indicesOfNonEmptyHoles;
 		}
+
+		public List<Integer> getValidHoles(Side side)
+		{
+	      ArrayList holes = new ArrayList(this.getNoOfHoles());
+	      int index = indexOfSide(holes);
+	      for(int i = 1; i <= this.getNoOfHoles(); i++)
+				{
+	         if (this.board[index][i] > 0)
+					 {
+	            holes.add(i);
+	         }
+	      }
+	      return holes;
+	   }
 
 	@Override
 	public String toString()
