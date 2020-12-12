@@ -83,4 +83,31 @@ public class Heuristics
     return heuristicScore;
   } // getHeuristicScore
 
+  // a good strategy is to start with the rightmost seedsCloseToOurScroing
+  // so divide the number of holes by three to get leftmost, middle, rightmost
+  public int seedsCloseToOurScroing(Board board, Side side) {
+      int holesNum = board.getNoOfHoles();
+      int seedsNum = 0;
+
+      for(int hole = holesNum - holesNum/3; hole <= holesNum; hole++) {
+         seedsNum += board.getSeeds(side, hole);
+      }
+
+      return seedsNum;
+   }
+
+   // this strategy will allow you to keep scoring in ur scoring well
+   public int numberOfNonEmptyHoles(Board board, Side side) {
+      int count = 0;
+      int holesNum = board.getNoOfHoles();
+
+      for(int hole = 1; hole <= holesNum; hole++) {
+         if (board.getSeeds(side, hole) > 0) {
+           count++;
+         }
+      }
+
+      return count;
+   }
+
 } // class Heuristics
