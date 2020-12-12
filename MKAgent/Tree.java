@@ -44,15 +44,24 @@ public class Tree
   public void generateChildrenLayers(int noOfLayers)
   {
     int noOfChildren = board.getNoOfHoles();
-    
+
     if(noOfLayers == 1)
       for(int i = 0; i < noOfChildren; i++)
-        this.addChild(new Tree(board, side.opposite()));
+      {
+        Board temp = new Board(this.board);
+        new Kalah(temp).makeMove(new Move(side, i+1));
+
+        this.addChild(new Tree(temp, side.opposite()));
+      } // for
+
 
     else if(noOfLayers > 1)
       for(int i = 0; i < noOfChildren; i++)
       {
-        Tree child = new Tree(board, side.opposite());
+        Board temp = new Board(this.board);
+        new Kalah(temp).makeMove(new Move(side, i+1));
+
+        Tree child = new Tree(temp, side.opposite());
         this.addChild(child);
         child.generateChildrenLayers(noOfLayers-1);
       } // for

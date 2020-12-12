@@ -85,7 +85,7 @@ public class Heuristics
 
   // a good strategy is to start with the rightmost seedsCloseToOurScroing
   // so divide the number of holes by three to get leftmost, middle, rightmost
-  public int seedsCloseToOurScroing(Board board, Side side) {
+  public int seedsCloseToOurScoring(Board board, Side side) {
       int holesNum = board.getNoOfHoles();
       int seedsNum = 0;
 

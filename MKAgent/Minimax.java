@@ -2,6 +2,9 @@ package MKAgent;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Minimax
 {
   // TODO: Implement minimax with alpha-beta pruning
@@ -35,35 +38,47 @@ public class Minimax
      return maxScore;
   }
 
-  public int computeBestNextMove(Tree tree, int depth)
-  {
-
-    ArrayList<Tree> children = tree.getChildren();
-    // Initialise to random values.
-    int bestMove = -1;
-    int bestHeuristicValue = -1;
-    Side childSide = tree.getSide().opposite();
-
-    for(int i = 0; i < children.size(); i++)
-    {
-      Tree child = children.get(i);
-      int minimaxVal = minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
-
-      if(minimaxVal > bestHeuristicValue)
-      {
-        bestHeuristicValue = minimaxVal;
-        bestMove = i+1;
-      } // if
-    } // for
-
-    return bestMove;
-  } // computeBestNextMove
+  // public int computeBestNextMove(Tree tree, int depth)
+  // {
+  //
+  //   ArrayList<Tree> children = tree.getChildren();
+  //
+  //   // Initialise to random values.
+  //   int bestMove = -1;
+  //   int bestHeuristicValue = -1;
+  //   Side childSide = tree.getSide().opposite();
+  //
+  //   for(int i = 0; i < children.size(); i++)
+  //   {
+  //     Tree child = children.get(i);
+  //     int minimaxVal = minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+  //
+  //     if(minimaxVal > bestHeuristicValue)
+  //     {
+  //       bestHeuristicValue = minimaxVal;
+  //       bestMove = i+1;
+  //     } // if
+  //   } // for
+  //
+  //   return bestMove;
+  // } // computeBestNextMove
 
   public int minimax(Tree node, int alpha, int beta, int depth)
   {
     if(node.getChildren().isEmpty() || depth == 0)
     {
-      return (int)Math.round(new Heuristics().getHeuristicScore(node));
+      int tmep = (int)Math.round(new Heuristics().getHeuristicScore(node));
+
+      try {
+      FileWriter myWriter = new FileWriter("./filename.txt");
+      myWriter.write("heuristic value: " + tmep);
+      myWriter.close();
+    } catch (IOException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
+    }
+
+      return tmep;
     }
     else
     {
@@ -74,8 +89,10 @@ public class Minimax
         bestValue = Integer.MIN_VALUE;
 
         // checking it it has childeren
-        for(Tree child : node.getChildren())
+        // for(Tree child : node.getChildren())
+        for(int i=1; i<8; i++)
         {
+          Tree child = node.getChild(i);
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
@@ -89,8 +106,9 @@ public class Minimax
         bestValue = Integer.MAX_VALUE;
 
         // checking it it has childeren
-        for(Tree child : node.getChildren())
+        for(int i=1; i<8; i++)
         {
+          Tree child = node.getChild(i);
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.min(bestValue, tempValue);
           beta = Math.min(beta, bestValue);

@@ -41,7 +41,6 @@ public class Agent
               Move optimalMove = runMinMax(gameTree);
               kalah.makeMove(board, optimalMove);
               Main.sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
-              canSwap = false;
             } // if
             else
               canSwap = true;
@@ -77,6 +76,7 @@ public class Agent
                 if(canSwap) canSwap = false;
 
                 gameTree = gameTree.getChild(moveTurn.move);
+                gameTree.generateChildrenLayers(1);
 
                 // Make your move
                 Move nextMove = runMinMax(gameTree);
@@ -85,7 +85,6 @@ public class Agent
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
 
                 gameTree = gameTree.getChild(nextMove.getHole());
-                gameTree.generateChildrenLayers(1);
               } // else
             } // if
             break;
@@ -112,10 +111,10 @@ public class Agent
     int bestHeuristicValue = -1;
     Minimax minimax = new Minimax(mySide);
 
-    for(int i = 1; i < 8; i++)
+    for(int i = 1; i < board.getNoOfHoles()+1; i++)
     {
       Tree child = tree.getChild(i);
-      int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+      int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
 
       if(minimaxVal > bestHeuristicValue)
       {
@@ -123,8 +122,9 @@ public class Agent
         bestMove = i;
       } // if
     } // for
+
     return new Move(mySide, bestMove);
-  }
+  } // runMinMax
 
   public boolean shouldSwap()
   {
