@@ -1,4 +1,5 @@
 package MKAgent;
+import java.util.ArrayList;
 
 public class Agent
 {
@@ -37,7 +38,7 @@ public class Agent
 
             if(isStarting)
             {
-              Move optimalMove = runMinMax();
+              Move optimalMove = runMinMax(gameTree);
               kalah.makeMove(board, optimalMove);
               Main.sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
               canSwap = false;
@@ -78,7 +79,7 @@ public class Agent
                 gameTree = gameTree.getChild(moveTurn.move);
 
                 // Make your move
-                Move nextMove = runMinMax();
+                Move nextMove = runMinMax(gameTree);
 
                 kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
@@ -105,9 +106,24 @@ public class Agent
 
   } // playGame
 
-  public Move runMinMax() throws Exception
+  public Move runMinMax(Tree tree) throws Exception
   {
-    return new Move(mySide, new Minimax(mySide).computeBestNextMove(gameTree, DEPTH-1));
+    int bestMove = -1;
+    int bestHeuristicValue = -1;
+    Minimax minimax = new Minimax(mySide);
+
+    for(int i = 1; i < 8; i++)
+    {
+      Tree child = tree.getChild(i);
+      int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+
+      if(minimaxVal > bestHeuristicValue)
+      {
+        bestHeuristicValue = minimaxVal;
+        bestMove = i;
+      } // if
+    } // for
+    return new Move(mySide, bestMove);
   }
 
   public boolean shouldSwap()

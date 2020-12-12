@@ -37,8 +37,8 @@ public class Minimax
 
   public int computeBestNextMove(Tree tree, int depth)
   {
-    ArrayList<Tree> children = tree.getChildren();
 
+    ArrayList<Tree> children = tree.getChildren();
     // Initialise to random values.
     int bestMove = -1;
     int bestHeuristicValue = -1;

@@ -44,7 +44,7 @@ public class Tree
   public void generateChildrenLayers(int noOfLayers)
   {
     int noOfChildren = board.getNoOfHoles();
-
+    
     if(noOfLayers == 1)
       for(int i = 0; i < noOfChildren; i++)
         this.addChild(new Tree(board, side.opposite()));
