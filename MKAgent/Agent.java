@@ -3,7 +3,7 @@ package MKAgent;
 public class Agent
 {
   public final int DEPTH = 8;
-  public final int DECISION_TIME;
+  // public final int DECISION_TIME;
 
   public Board board;
   public Kalah kalah;
@@ -13,90 +13,108 @@ public class Agent
 
   public void playGame()
   {
-    canSwap = false;
+    boolean canSwap = false;
 
     board = new Board(7,7);
     kalah = new Kalah(board);
 
+    // South is the max player
+    Tree gameTree = new Tree(board, Side.SOUTH);
+    gameTree.generateChildrenLayers(DEPTH);
+
     while(true)
     {
-      String message = Main.recvMsg();
-      MsgType msgType = Protocol.getMessageType(message);
-
-      switch(msgType)
+      try
       {
-        case START:
-          boolean isStarting = Protocol.interpretStartMessage(message);
-          mySide = isStarting ? Side.SOUTH : Side.NORTH;
+        String message = Main.recvMsg();
+        MsgType msgType = Protocol.getMessageType(message);
 
-          if(isStarting)
-          {
-            Tree temp = new Tree(board, null, mySide);
-            gameTree = Tree.generateChildrenLayers(temp, DEPTH);
+        switch(msgType)
+        {
+          case START:
+            boolean isStarting = Protocol.interpretStartMsg(message);
+            mySide = isStarting ? Side.SOUTH : Side.NORTH;
 
-            Move optimalMove = runMinMax();
-            kalah.makeMove(board, optimalMove);
-            sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
-            canSwap = false;
-          } // if
-          else
-            canSwap = true;
-          break;
+            if(isStarting)
+            {
+              Move optimalMove = runMinMax();
+              kalah.makeMove(board, optimalMove);
+              Main.sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
+              canSwap = false;
+            } // if
+            else
+              canSwap = true;
+            break;
 
-        case STATE:
-          Protocol.MoveTurn moveTurn = Protocol.interpretStateMsg(message, board);
+          case STATE:
+            Protocol.MoveTurn moveTurn = Protocol.interpretStateMsg(message, board);
 
-          if(moveTurn.end)
-            return;
+            if(moveTurn.end)
+              return;
 
-          if(moveTurn.again && moveTurn.move == -1) // player 1
-          {
-            mySide = mySide.opposite();
-          } // if
-
-          if(moveTurn.again && !moveTurn.end)
-          {
-            if(canSwap && shouldSwap())
+            if(moveTurn.again && moveTurn.move == -1) // player 1
             {
               mySide = mySide.opposite();
-              Main.sendMsg(Protocol.createSwapMsg());
-              canSwap = false;
 
-              Tree temp = new Tree(board, null, mySide);
-              gameTree = Tree.generateChildrenLayers(temp, DEPTH);
-            }
-            else // can swap but doesnt swap or cant swap at all.
+              gameTree = new Tree(board, mySide);
+              gameTree.generateChildrenLayers(DEPTH);
+            } // if
+
+            if(moveTurn.again && !moveTurn.end)
             {
-              if(canSwap) canSwap = false;
+              if(canSwap && shouldSwap())
+              {
+                mySide = mySide.opposite();
+                Main.sendMsg(Protocol.createSwapMsg());
+                canSwap = false;
 
-              // Make your move
-              Move nextMove = runMinMax();
-              Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
-            } // else
-          } // if
-          break;
+                gameTree = new Tree(board, mySide);
+                gameTree.generateChildrenLayers(DEPTH);
+              }
+              else // can swap but doesnt swap or cant swap at all.
+              {
+                if(canSwap) canSwap = false;
 
-        case END:
-          return;
+                gameTree = gameTree.getChild(moveTurn.move);
 
-        default:
-          System.err.println("Unknown state :(");
-          break;
-      } // switch
+                // Make your move
+                Move nextMove = runMinMax();
+
+                kalah.makeMove(board, nextMove);
+                Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
+
+                gameTree = gameTree.getChild(nextMove.getHole());
+                gameTree.generateChildrenLayers(1);
+              } // else
+            } // if
+            break;
+
+          case END:
+            return;
+
+          default:
+            System.err.println("Unknown state :(");
+            break;
+        } // switch
+      } // try
+      catch(Exception exception)
+      {
+        System.err.println(exception.getMessage());
+      } // catch
     } // while
 
   } // playGame
 
   public Move runMinMax() throws Exception
   {
-    return new Move(mySide, Minimax.computeBestNextMove(this.kalah.getBoard()));
+    return new Move(mySide, new Minimax(mySide).computeBestNextMove(gameTree, DEPTH-1));
   }
 
   public boolean shouldSwap()
   {
-    Minimax minimax = new Minimax(this.side);
-    int noSwapScore = minimax.advantageToSwap(this.side, this.board);
-    int swapScore = minimax.advantageToSwap(this.side.opposite(), this.board);
+    Minimax minimax = new Minimax(mySide);
+    int noSwapScore = minimax.advantageToSwap(mySide, board);
+    int swapScore = minimax.advantageToSwap(mySide.opposite(), board);
     return swapScore > noSwapScore;
   } // shouldSwap
 } // class Agent

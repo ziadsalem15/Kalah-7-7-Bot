@@ -1,4 +1,6 @@
 package MKAgent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Minimax
 {
@@ -33,16 +35,35 @@ public class Minimax
      return maxScore;
   }
 
-  public Tree computeBestNextMove(Board board)
+  public int computeBestNextMove(Tree tree, int depth)
   {
+    ArrayList<Tree> children = tree.getChildren();
 
-  }
+    // Initialise to random values.
+    int bestMove = -1;
+    int bestHeuristicValue = -1;
+    Side childSide = tree.getSide().opposite();
+
+    for(int i = 0; i < children.size(); i++)
+    {
+      Tree child = children.get(i);
+      int minimaxVal = minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+
+      if(minimaxVal > bestHeuristicValue)
+      {
+        bestHeuristicValue = minimaxVal;
+        bestMove = i+1;
+      } // if
+    } // for
+
+    return bestMove;
+  } // computeBestNextMove
 
   public int minimax(Tree node, int alpha, int beta, int depth)
   {
     if(node.getChildren().isEmpty() || depth == 0)
     {
-      return Heuristics.getHeuristicScore(node);
+      return (int)Math.round(new Heuristics().getHeuristicScore(node));
     }
     else
     {

@@ -1,4 +1,6 @@
 package MKAgent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -278,19 +280,19 @@ public class Board extends Observable implements Cloneable
       return indicesOfNonEmptyHoles;
 		}
 
-		public List<Integer> getValidHoles(Side side)
-		{
-	      ArrayList holes = new ArrayList(this.getNoOfHoles());
-	      int index = indexOfSide(holes);
-	      for(int i = 1; i <= this.getNoOfHoles(); i++)
-				{
-	         if (this.board[index][i] > 0)
-					 {
-	            holes.add(i);
-	         }
-	      }
-	      return holes;
-	   }
+		// public List<Integer> getValidHoles(Side side)
+		// {
+	  //     ArrayList holes = new ArrayList(this.getNoOfHoles());
+	  //     int index = indexOfSide(holes);
+	  //     for(int i = 1; i <= this.getNoOfHoles(); i++)
+		// 		{
+	  //        if (this.board[index][i] > 0)
+		// 			 {
+	  //           holes.add(i);
+	  //        }
+	  //     }
+	  //     return holes;
+	  //  }
 
 	@Override
 	public String toString()
