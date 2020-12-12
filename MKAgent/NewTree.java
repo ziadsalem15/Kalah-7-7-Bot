@@ -1,3 +1,11 @@
+package MKAgent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 public class NewTree
 {
 
@@ -13,7 +21,7 @@ public class NewTree
      this.board = board;
      this.side = side;
      this.children = null;
-     this.heuristicScore = Heuristics.getHeuristicScore(this);
+     //this.heuristicScore = Heuristics.getHeuristicScore(this);
   }
 
   public NewTree getChild(int lastMove)
@@ -30,7 +38,7 @@ public class NewTree
      return this.children;
   }
 
-  private Node generateChild(int validChild)
+  private NewTree generateChild(int validChild)
   {
      Board tempBoard = new Board(this.board);
      Move tempMove = new Move(this.side, validChild);
@@ -45,7 +53,7 @@ public class NewTree
      Iterator iterateOnValid = validHoles.iterator();
      while(iterateOnValid.hasNext())
      {
-        int validChild = iterateOnValid.next();
+        int validChild = (Integer)iterateOnValid.next();
         map.put(validChild, this.generateChild(validChild));
      }
      return map;
@@ -60,7 +68,7 @@ public class NewTree
        Iterator childrenValues = this.children.values().iterator();
        while(childrenValues.hasNext())
        {
-          NewTree temp = childrenValues.next();
+          NewTree temp = (NewTree)childrenValues.next();
           temp.generateChildrenLayers();
        }
     }
@@ -69,4 +77,8 @@ public class NewTree
   {
     return side;
   } // getSide
+  public Board getBoard()
+  {
+    return board;
+  } // getBoard
 }

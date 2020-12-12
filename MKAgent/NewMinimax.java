@@ -59,11 +59,11 @@ public class NewMinimax
   //   return bestMove;
   // } // computeBestNextMove
 
-  public int minimax(Tree node, int alpha, int beta, int depth)
+  public int minimax(NewTree node, int alpha, int beta, int depth)
   {
     if(node.getChildren().isEmpty() || depth == 0)
     {
-      return (int)Math.round(new Heuristics().getHeuristicScore(node));
+      return (int)Math.round(new NewHeuristics().getHeuristicScore(node));
     }
     else
     {
@@ -74,8 +74,9 @@ public class NewMinimax
         bestValue = Integer.MIN_VALUE;
 
         // checking it it has childeren
-        for(NewTree child : node.getChildren().keySet())
+        for(NewTree child : node.getChildren().values())
         {
+
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
@@ -89,7 +90,7 @@ public class NewMinimax
         bestValue = Integer.MAX_VALUE;
 
         // checking it it has childeren
-        for(NewTree child : node.getChildren().keySet())
+        for(NewTree child : node.getChildren().values())
         {
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.min(bestValue, tempValue);

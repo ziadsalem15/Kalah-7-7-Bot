@@ -283,7 +283,7 @@ public class Board extends Observable implements Cloneable
 		public List<Integer> getValidHoles(Side side)
 		{
 	      ArrayList holes = new ArrayList(this.getNoOfHoles());
-	      int index = indexOfSide(holes);
+	      int index = indexOfSide(side);
 	      for(int i = 1; i <= this.getNoOfHoles(); i++)
 				{
 	         if (this.board[index][i] > 0)

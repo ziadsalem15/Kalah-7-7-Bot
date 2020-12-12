@@ -1,7 +1,8 @@
+package MKAgent;
 public class NewAgent
 {
   public final int DEPTH = 8;
-  public final int DECISION_TIME;
+  //public final int DECISION_TIME;
 
   public Board board;
   public Kalah kalah;
@@ -28,7 +29,7 @@ public class NewAgent
         switch(msgType)
         {
           case START:
-            boolean isStarting = Protocol.interpretStartMessage(message);
+            boolean isStarting = Protocol.interpretStartMsg(message);
             mySide = isStarting ? Side.SOUTH : Side.NORTH;
 
             if(isStarting)
@@ -98,7 +99,7 @@ public class NewAgent
 
   public Move runMinMax(NewTree tree) throws Exception
   {
-    return new Move(mySide, NewMinimax.minimax(tree, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH));
+    return new Move(mySide, new NewMinimax(mySide).minimax(tree, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH));
   }
 
   public boolean shouldSwap()
