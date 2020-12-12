@@ -26,7 +26,7 @@ public class NewTree
 
   public NewTree getChild(int lastMove)
   {
-     return this.children.get(lastMove);
+     return (NewTree) this.children.get(lastMove);
   }
 
   public Map<Integer, NewTree> getChildren()
@@ -61,8 +61,12 @@ public class NewTree
 
   public void generateChildrenLayers()
   {
+
     if (this.children == null)
-       this.children = this.getChildren();
+    {
+      this.children = this.getChildren();
+    }
+
     else
     {
        Iterator childrenValues = this.children.values().iterator();
