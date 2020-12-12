@@ -66,7 +66,6 @@ public class NewAgent
             {
               if(canSwap && shouldSwap())
               {
-
                 mySide = mySide.opposite();
                 tree = new NewTree(new Board(board), mySide.opposite());
                 tree.generateChildrenLayers();

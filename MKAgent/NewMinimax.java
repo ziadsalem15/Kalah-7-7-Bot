@@ -28,7 +28,6 @@ public class NewMinimax
   {
     List<Integer> indicesOfNonEmptyHoles = board.getIndicesOfNonEmptyHoles(side);
     int maxScore = Integer.MIN_VALUE;
-
      for(Integer index : indicesOfNonEmptyHoles)
      {
         Move chMove = new Move(side, index);
@@ -50,7 +49,7 @@ public class NewMinimax
     int bestHeuristicValue = -1;
     //Side childSide = tree.getSide().opposite();
 
-    for(int i = 0; i < tree.getBoard().getValidHoles(tree.getSide()).size(); i++)
+    for(int i = 0; i < tree.getBoard().getValidHoles(ourSide).size(); i++)
     {
       NewTree child = children.get(i);
       int minimaxVal = minimax(tree, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);

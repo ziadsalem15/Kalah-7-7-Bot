@@ -76,7 +76,7 @@ public class NewHeuristics
   public double getHeuristicScore(NewTree tree)
   {
 
-    double weights[] = {0.45, 0.05, -0.1, 0.1};
+    double weights[] = {0.45, 0.05, -0.1, 0.45};
     double heuristicScore = getDifferenceBetweenWells(tree) * weights[0]
                            + getCapturingOportunities(tree, false) * weights[1]
                            + getCapturingOportunities(tree, true) * weights[2]
