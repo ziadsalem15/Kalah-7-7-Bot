@@ -50,15 +50,23 @@ public class NewAgent
 
             if(moveTurn.again && moveTurn.move == -1) // player 1
             {
+
               mySide = mySide.opposite();
               tree = new NewTree(new Board(board), mySide);
               tree.generateChildrenLayers();
 
+              Move nextMove = runMinMax(tree);
+
+              kalah.makeMove(board, nextMove);
+              Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
+
+
             } // if
-            if(moveTurn.again && !moveTurn.end)
+            else if(moveTurn.again && !moveTurn.end)
             {
               if(canSwap && shouldSwap())
               {
+
                 mySide = mySide.opposite();
                 tree = new NewTree(new Board(board), mySide.opposite());
                 tree.generateChildrenLayers();
@@ -68,8 +76,10 @@ public class NewAgent
               else // can swap but doesnt swap or cant swap at all.
               {
                 if(canSwap) canSwap = false;
+
                 tree = tree.getChild(moveTurn.move);
                 tree.generateChildrenLayers();
+
                 Move nextMove = runMinMax(tree);
                 kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
@@ -99,7 +109,7 @@ public class NewAgent
 
   public Move runMinMax(NewTree tree) throws Exception
   {
-    return new Move(mySide, new NewMinimax(mySide).minimax(tree, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH));
+    return new Move(mySide, new NewMinimax(mySide).computeBestNextMove(tree, 1));
   }
 
   public boolean shouldSwap()

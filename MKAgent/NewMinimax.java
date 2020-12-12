@@ -1,6 +1,12 @@
 package MKAgent;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class NewMinimax
 {
@@ -35,35 +41,37 @@ public class NewMinimax
      return maxScore;
   }
 
-  // public int computeBestNextMove(NewTree tree, int depth)
-  // {
-  //   Map<Integer, NewTree> children = tree.getChildren();
-  //
-  //   // Initialise to random values.
-  //   int bestMove = -1;
-  //   int bestHeuristicValue = -1;
-  //   Side childSide = tree.getSide().opposite();
-  //
-  //   for(int i = 0; i < children.size(); i++)
-  //   {
-  //     Tree child = children.get(i);
-  //     int minimaxVal = minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
-  //
-  //     if(minimaxVal > bestHeuristicValue)
-  //     {
-  //       bestHeuristicValue = minimaxVal;
-  //       bestMove = i+1;
-  //     } // if
-  //   } // for
-  //
-  //   return bestMove;
-  // } // computeBestNextMove
+  public int computeBestNextMove(NewTree tree, int depth)
+  {
+    Map<Integer, NewTree> children = tree.getChildren();
+
+    // Initialise to random values.
+    int bestMove = -1;
+    int bestHeuristicValue = -1;
+    //Side childSide = tree.getSide().opposite();
+
+    for(int i = 0; i < tree.getBoard().getValidHoles(tree.getSide()).size(); i++)
+    {
+      NewTree child = children.get(i);
+      int minimaxVal = minimax(tree, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+
+      if(minimaxVal > bestHeuristicValue)
+      {
+        bestHeuristicValue = minimaxVal;
+        bestMove = i+1;
+      } // if
+    } // for
+
+    return bestMove;
+  } // computeBestNextMove
 
   public int minimax(NewTree node, int alpha, int beta, int depth)
   {
+
     if(node.getChildren().isEmpty() || depth == 0)
     {
-      return (int)Math.round(new NewHeuristics().getHeuristicScore(node));
+      int best = (int)Math.round(new NewHeuristics().getHeuristicScore(node));
+      return best;
     }
     else
     {
