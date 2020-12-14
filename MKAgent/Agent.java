@@ -20,7 +20,7 @@ public class Agent
     kalah = new Kalah(board);
 
     // South is the max player
-    Tree gameTree = new Tree(board, Side.SOUTH);
+    gameTree = new Tree(board, Side.SOUTH);
     gameTree.generateChildrenLayers(DEPTH);
 
     while(true)
@@ -38,7 +38,7 @@ public class Agent
 
             if(isStarting)
             {
-              Move optimalMove = runMinMax(gameTree);
+              Move optimalMove = runMinMax();
               kalah.makeMove(board, optimalMove);
               Main.sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
             } // if
@@ -79,7 +79,7 @@ public class Agent
                 gameTree.generateChildrenLayers(1);
 
                 // Make your move
-                Move nextMove = runMinMax(gameTree);
+                Move nextMove = runMinMax();
 
                 kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
@@ -105,7 +105,7 @@ public class Agent
 
   } // playGame
 
-  public Move runMinMax(Tree tree) throws Exception
+  public Move runMinMax() throws Exception
   {
     int bestMove = -1;
     int bestHeuristicValue = -1;
@@ -113,7 +113,7 @@ public class Agent
 
     for(int i = 1; i < board.getNoOfHoles()+1; i++)
     {
-      Tree child = tree.getChild(i);
+      Tree child = gameTree.getChild(i);
       int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
 
       if(minimaxVal > bestHeuristicValue)

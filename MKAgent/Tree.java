@@ -67,6 +67,21 @@ public class Tree
       } // for
   } // generateChildren
 
+  public void generateBottomLayer()
+  {
+    if(this.children.size() == 0)
+      for(int i = 0; i < board.getNoOfHoles(); i++)
+      {
+        Board temp = new Board(this.board);
+        new Kalah(temp).makeMove(new Move(side, i+1));
+
+        this.addChild(new Tree(temp, side.opposite()));
+      } // for
+
+    for(Tree child : this.children)
+      child.generateBottomLayer();
+  } // generateBottomLayer
+
   public boolean removeChild(Tree child)
   {
     return children.remove(child);

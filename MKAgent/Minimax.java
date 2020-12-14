@@ -65,18 +65,26 @@ public class Minimax
 
   public int minimax(Tree node, int alpha, int beta, int depth)
   {
+  //   try {
+  //   FileWriter myWriter = new FileWriter("./filename1.txt");
+  //   myWriter.write("NB OF CHILDREN: " + node.getChildren().size());
+  //   myWriter.close();
+  // } catch (IOException e) {
+  //   System.out.println("An error occurred.");
+  //   e.printStackTrace();
+  // }
     if(node.getChildren().isEmpty() || depth == 0)
     {
       int tmep = (int)Math.round(new Heuristics().getHeuristicScore(node));
 
-      try {
-      FileWriter myWriter = new FileWriter("./filename.txt");
-      myWriter.write("heuristic value: " + tmep);
-      myWriter.close();
-    } catch (IOException e) {
-      System.out.println("An error occurred.");
-      e.printStackTrace();
-    }
+    //   try {
+    //   FileWriter myWriter = new FileWriter("./filename.txt");
+    //   myWriter.write("heuristic value: " + depth);
+    //   myWriter.close();
+    // } catch (IOException e) {
+    //   System.out.println("An error occurred.");
+    //   e.printStackTrace();
+    // }
 
       return tmep;
     }
