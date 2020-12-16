@@ -58,29 +58,30 @@ public class Main
 
     // Board board = new Board(7,7);
     // Side side = Side.SOUTH;
-    // Tree tree = new Tree(board, side);
+    // Tree tree = new Tree(board, side, 0);
     //
     // System.out.println("Root no of children: " + tree.getChildren().size());
-    // tree.generateChildrenLayers(8);
+    // // tree.generateChildrenLayers(8);
+    // //
+    // // Tree child = tree;
+    // // for(int i = 1; i < 9; i++)
+    // // {
+    // //   System.out.println("Layer " + i + ": " + child.getChildren().size());
+    // //   child = child.getChild(1);
+    // // }
+    // // System.out.println("Hello");
     //
-    // Tree child = tree;
-    // for(int i = 1; i < 9; i++)
-    // {
-    //   System.out.println("Layer " + i + ": " + child.getChildren().size());
-    //   child = child.getChild(1);
-    // }
-    //
-    // tree.generateBottomLayer();
+    // tree.generateBottomLayer1(0);
     //
     // System.out.println();
     // System.out.println("Generated 1 more layer\n");
     // System.out.println();
     //
     // Tree child1 = tree;
-    // for(int i = 1; i < 9; i++)
+    // for(int i = 1; i < 2; i++)
     // {
     //   System.out.println("Layer " + i + ": " + child1.getChildren().size());
     //   child1 = child1.getChild(1);
-    }
+    // }
 	}
 }

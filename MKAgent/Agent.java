@@ -1,6 +1,9 @@
 package MKAgent;
 import java.util.ArrayList;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Agent
 {
   public final int DEPTH = 8;
@@ -20,7 +23,7 @@ public class Agent
     kalah = new Kalah(board);
 
     // South is the max player
-    gameTree = new Tree(board, Side.SOUTH);
+    gameTree = new Tree(board, Side.SOUTH, 0);
     gameTree.generateChildrenLayers(DEPTH);
 
     while(true)
@@ -56,7 +59,7 @@ public class Agent
             {
               mySide = mySide.opposite();
 
-              gameTree = new Tree(board, mySide);
+              gameTree = new Tree(board, mySide, 0);
               gameTree.generateChildrenLayers(DEPTH);
             } // if
 
@@ -68,23 +71,25 @@ public class Agent
                 Main.sendMsg(Protocol.createSwapMsg());
                 canSwap = false;
 
-                gameTree = new Tree(board, mySide);
+                gameTree = new Tree(board, mySide, 0);
                 gameTree.generateChildrenLayers(DEPTH);
               }
               else // can swap but doesnt swap or cant swap at all.
               {
                 if(canSwap) canSwap = false;
 
-                gameTree = gameTree.getChild(moveTurn.move);
-                gameTree.generateChildrenLayers(1);
+                // gameTree = gameTree.getChild(moveTurn.move);
+                // gameTree.generateBottomLayer1(8);
 
+                gameTree = new Tree(board, mySide, 0);
+                gameTree.generateChildrenLayers(DEPTH);
                 // Make your move
                 Move nextMove = runMinMax();
 
                 kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
 
-                gameTree = gameTree.getChild(nextMove.getHole());
+                //gameTree = gameTree.getChild(nextMove.getHole());
               } // else
             } // if
             break;
@@ -115,9 +120,17 @@ public class Agent
     {
       Tree child = gameTree.getChild(i);
       int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
-
+        try {
+        FileWriter myWriter = new FileWriter("./filename22.txt");
+        myWriter.write("heuristic value: " + minimaxVal + " " + i);
+        myWriter.close();
+      } catch (IOException e) {
+        System.out.println("An error occurred.");
+        e.printStackTrace();
+      }
       if(minimaxVal > bestHeuristicValue)
       {
+
         bestHeuristicValue = minimaxVal;
         bestMove = i;
       } // if
