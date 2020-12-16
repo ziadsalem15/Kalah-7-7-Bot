@@ -11,19 +11,7 @@ public class Tree
 
   private final Board board;
   private Side side;
-  public int depth;
-  // Constructor
-  public Tree(Board board, Side side, int depth)
-  {
-    // TODO: Set the heuristic score
-    children = new ArrayList<Tree>();
 
-    // You shouldn't be able to change those values.
-    this.board = board;
-    this.side = side;
-    this.depth = depth;
-
-  }
   public Tree(Board board, Side side)
   {
     // TODO: Set the heuristic score
@@ -32,7 +20,6 @@ public class Tree
     // You shouldn't be able to change those values.
     this.board = board;
     this.side = side;
-
   }
 
   public void addChild(Tree child)
@@ -60,54 +47,63 @@ public class Tree
   public void generateChildrenLayers(int noOfLayers)
   {
     int noOfChildren = board.getNoOfHoles();
+
     if(noOfLayers == 1)
       for(int i = 0; i < noOfChildren; i++)
       {
-        Board temp = new Board(this.board);
-        new Kalah(temp).makeMove(new Move(side, i+1));
+        Board state = new Board(this.board);
+        Move nextMove = new Move(side, i+1);
 
-        this.addChild(new Tree(temp, side.opposite(), noOfLayers));
+        if(!Kalah.isLegalMove(state, nextMove))
+          continue;
+
+        Side tmpSide = Kalah.makeMove(state, nextMove);
+        this.addChild(new Tree(state, tmpSide));
       } // for
-
 
     else if(noOfLayers > 1)
       for(int i = 0; i < noOfChildren; i++)
       {
-        Board temp = new Board(this.board);
-        new Kalah(temp).makeMove(new Move(side, i+1));
+        Board state = new Board(this.board);
+        Move nextMove = new Move(side, i+1);
 
-        Tree child = new Tree(temp, side.opposite(), noOfLayers);
+        if(!Kalah.isLegalMove(state, nextMove))
+          continue;
+
+        Side tmpSide = Kalah.makeMove(state, nextMove);
+
+        Tree child = new Tree(state, tmpSide);
         this.addChild(child);
         child.generateChildrenLayers(noOfLayers-1);
       } // for
   } // generateChildren
 
 
-  public ArrayList<Tree> getChildrenAtDepth(int depth, Tree tree)
-  {
-
-    ArrayList<Tree> children = new ArrayList();
-    if (tree.getChild(1).depth == depth)
-    {
-
-      for (int i = 0; i < board.getNoOfHoles(); i++)
-      {
-        Tree child = tree.getChild(i+1);
-        children.add(child);
-      }
-    }
-    else
-    {
-
-      for (int i = 0; i < board.getNoOfHoles(); i++)
-      {
-
-        getChildrenAtDepth(depth, tree.getChild(i+1));
-      }
-    }
-
-    return children;
-  }
+  // public ArrayList<Tree> getChildrenAtDepth(int depth, Tree tree)
+  // {
+  //
+  //   ArrayList<Tree> children = new ArrayList();
+  //   if (tree.getChild(1).depth == depth)
+  //   {
+  //
+  //     for (int i = 0; i < board.getNoOfHoles(); i++)
+  //     {
+  //       Tree child = tree.getChild(i+1);
+  //       children.add(child);
+  //     }
+  //   }
+  //   else
+  //   {
+  //
+  //     for (int i = 0; i < board.getNoOfHoles(); i++)
+  //     {
+  //
+  //       getChildrenAtDepth(depth, tree.getChild(i+1));
+  //     }
+  //   }
+  //
+  //   return children;
+  // }
 
 
   // public void generateBottomLayer()
@@ -128,27 +124,26 @@ public class Tree
   // } // generateBottomLayer
 
 
-  public void generateBottomLayer1(int depth)
-  {
-
-    ArrayList<Tree> leaves = new ArrayList();
-    leaves = getChildrenAtDepth(depth, this);
-
-    Tree leaf1 = leaves.get(1);
-    if (leaf1.children.size() == 0)
-    {
-      for (Tree leaf : leaves)
-      {
-        for(int i = 0; i < board.getNoOfHoles(); i++)
-        {
-          Board temp = new Board(this.board);
-          new Kalah(temp).makeMove(new Move(side, i+1));
-
-          this.addChild(new Tree(temp, side.opposite(), depth+1));
-        } // for
-      }
-    }
-  } // generateBottomLayer
+  // public void generateBottomLayer1(int depth)
+  // {
+  //   ArrayList<Tree> leaves = new ArrayList();
+  //   leaves = getChildrenAtDepth(depth, this);
+  //
+  //   Tree leaf1 = leaves.get(1);
+  //   if (leaf1.children.size() == 0)
+  //   {
+  //     for (Tree leaf : leaves)
+  //     {
+  //       for(int i = 0; i < board.getNoOfHoles(); i++)
+  //       {
+  //         Board temp = new Board(this.board);
+  //         new Kalah(temp).makeMove(new Move(side, i+1));
+  //
+  //         this.addChild(new Tree(temp, side.opposite(), depth+1));
+  //       } // for
+  //     }
+  //   }
+  // } // generateBottomLayer
 
   public boolean removeChild(Tree child)
   {

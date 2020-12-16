@@ -15,7 +15,6 @@ public class Minimax
   public int bestValue;
   private static int MINIMAX_DEPTH = 10;
 
-
   public Minimax(Side side)
   {
     this.ourSide = side;
@@ -38,56 +37,11 @@ public class Minimax
      return maxScore;
   }
 
-  // public int computeBestNextMove(Tree tree, int depth)
-  // {
-  //
-  //   ArrayList<Tree> children = tree.getChildren();
-  //
-  //   // Initialise to random values.
-  //   int bestMove = -1;
-  //   int bestHeuristicValue = -1;
-  //   Side childSide = tree.getSide().opposite();
-  //
-  //   for(int i = 0; i < children.size(); i++)
-  //   {
-  //     Tree child = children.get(i);
-  //     int minimaxVal = minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
-  //
-  //     if(minimaxVal > bestHeuristicValue)
-  //     {
-  //       bestHeuristicValue = minimaxVal;
-  //       bestMove = i+1;
-  //     } // if
-  //   } // for
-  //
-  //   return bestMove;
-  // } // computeBestNextMove
-
   public int minimax(Tree node, int alpha, int beta, int depth)
   {
-  //   try {
-  //   FileWriter myWriter = new FileWriter("./filename1.txt");
-  //   myWriter.write("NB OF CHILDREN: " + node.getChildren().size());
-  //   myWriter.close();
-  // } catch (IOException e) {
-  //   System.out.println("An error occurred.");
-  //   e.printStackTrace();
-  // }
     if(node.getChildren().isEmpty() || depth == 0)
-    {
-      int tmep = (int)Math.round(new Heuristics().getHeuristicScore(node));
+      return (int)Math.round(new Heuristics().getHeuristicScore(node));
 
-    //   try {
-    //   FileWriter myWriter = new FileWriter("./filename.txt");
-    //   myWriter.write("heuristic value: " + depth);
-    //   myWriter.close();
-    // } catch (IOException e) {
-    //   System.out.println("An error occurred.");
-    //   e.printStackTrace();
-    // }
-
-      return tmep;
-    }
     else
     {
       // if our side then its a maximizing node
@@ -97,10 +51,8 @@ public class Minimax
         bestValue = Integer.MIN_VALUE;
 
         // checking it it has childeren
-        // for(Tree child : node.getChildren())
-        for(int i=1; i<8; i++)
+        for(Tree child : node.getChildren())
         {
-          Tree child = node.getChild(i);
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
@@ -114,9 +66,8 @@ public class Minimax
         bestValue = Integer.MAX_VALUE;
 
         // checking it it has childeren
-        for(int i=1; i<8; i++)
+        for(Tree child : node.getChildren())
         {
-          Tree child = node.getChild(i);
           tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.min(bestValue, tempValue);
           beta = Math.min(beta, bestValue);
@@ -124,6 +75,7 @@ public class Minimax
             break;
         }
       }
+
       return bestValue;
     } // else
   } // minimax

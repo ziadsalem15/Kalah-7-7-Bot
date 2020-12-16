@@ -1,1 +1,1 @@
-heuristic value: -1 2
+heuristic value: 0 7

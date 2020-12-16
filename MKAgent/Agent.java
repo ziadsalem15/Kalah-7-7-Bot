@@ -23,7 +23,7 @@ public class Agent
     kalah = new Kalah(board);
 
     // South is the max player
-    gameTree = new Tree(board, Side.SOUTH, 0);
+    gameTree = new Tree(board, Side.SOUTH);
     gameTree.generateChildrenLayers(DEPTH);
 
     while(true)
@@ -59,7 +59,7 @@ public class Agent
             {
               mySide = mySide.opposite();
 
-              gameTree = new Tree(board, mySide, 0);
+              gameTree = new Tree(board, mySide);
               gameTree.generateChildrenLayers(DEPTH);
             } // if
 
@@ -71,18 +71,17 @@ public class Agent
                 Main.sendMsg(Protocol.createSwapMsg());
                 canSwap = false;
 
-                gameTree = new Tree(board, mySide, 0);
+                gameTree = new Tree(board, mySide);
                 gameTree.generateChildrenLayers(DEPTH);
               }
               else // can swap but doesnt swap or cant swap at all.
               {
                 if(canSwap) canSwap = false;
 
-                // gameTree = gameTree.getChild(moveTurn.move);
-                // gameTree.generateBottomLayer1(8);
-
-                gameTree = new Tree(board, mySide, 0);
+                kalah.makeMove(new Move(mySide.opposite(), moveTurn.move));
+                gameTree = new Tree(board, mySide);
                 gameTree.generateChildrenLayers(DEPTH);
+
                 // Make your move
                 Move nextMove = runMinMax();
 
@@ -118,19 +117,15 @@ public class Agent
 
     for(int i = 1; i < board.getNoOfHoles()+1; i++)
     {
+      Board temp = board.clone();
+      if(!Kalah.isLegalMove(temp, new Move(mySide, i)))
+        continue;
+
       Tree child = gameTree.getChild(i);
       int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
-        try {
-        FileWriter myWriter = new FileWriter("./filename22.txt");
-        myWriter.write("heuristic value: " + minimaxVal + " " + i);
-        myWriter.close();
-      } catch (IOException e) {
-        System.out.println("An error occurred.");
-        e.printStackTrace();
-      }
+
       if(minimaxVal > bestHeuristicValue)
       {
-
         bestHeuristicValue = minimaxVal;
         bestMove = i;
       } // if
@@ -141,9 +136,11 @@ public class Agent
 
   public boolean shouldSwap()
   {
-    Minimax minimax = new Minimax(mySide);
-    int noSwapScore = minimax.advantageToSwap(mySide, board);
-    int swapScore = minimax.advantageToSwap(mySide.opposite(), board);
-    return swapScore > noSwapScore;
+    // Minimax minimax = new Minimax(mySide);
+    // int noSwapScore = minimax.advantageToSwap(mySide, board);
+    // int swapScore = minimax.advantageToSwap(mySide.opposite(), board);
+    // return swapScore > noSwapScore;
+
+    return false;
   } // shouldSwap
 } // class Agent
