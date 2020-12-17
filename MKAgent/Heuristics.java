@@ -79,7 +79,7 @@ public class Heuristics
 
   public double getHeuristicScore(Tree tree)
   {
-    double weights[] = {1.1, 1, -0.565937, 0.7};
+    double weights[] = {0.485, 0.269, -0.565, 0.421};
     double heuristicScore = getDifferenceBetweenWells(tree) * weights[0]
                            + getCapturingOportunities(tree, false) * weights[1]
                            + getCapturingOportunities(tree, true) * weights[2]
@@ -89,18 +89,21 @@ public class Heuristics
 
   // a good strategy is to start with the rightmost seedsCloseToOurScroing
   // so divide the number of holes by three to get leftmost, middle, rightmost
-  public int seedsCloseToOurScoring(Board board, Side side) {
-      int holesNum = board.getNoOfHoles();
-      int seedsNum = 0;
+  public int seedsCloseToOurScoring(Tree tree) {
+    Board board = tree.getBoard();
+    Side side = tree.getSide();
 
-      for(int hole = holesNum - holesNum/3; hole <= holesNum; hole++) {
-         seedsNum += board.getSeeds(side, hole);
-      }
+    int holesNum = board.getNoOfHoles();
+    int seedsNum = 0;
 
-      return seedsNum;
+    for(int hole = holesNum - holesNum/3; hole <= holesNum; hole++) {
+       seedsNum += board.getSeeds(side, hole);
+    }
+
+    return seedsNum;
    }
 
-   // this strategy will allow you to keep scoring in ur scoring well
+   // this strategy will allow you to keep scoring in your scoring well
    public int numberOfNonEmptyHoles(Board board, Side side) {
       int count = 0;
       int holesNum = board.getNoOfHoles();
@@ -113,5 +116,10 @@ public class Heuristics
 
       return count;
    }
+
+   // public int moreSeeds(Tree tree)
+   // {
+   //
+   // } // moreSeeds
 
 } // class Heuristics

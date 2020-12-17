@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Agent
 {
-  public final int DEPTH = 8;
+  public final int DEPTH = 7;
   // public final int DECISION_TIME;
 
   public Board board;
@@ -112,8 +112,15 @@ public class Agent
 
   public Move runMinMax() throws Exception
   {
+    boolean maximizingPlayer = (mySide == Side.SOUTH);
+
+    double bestHeuristicValue;
+    if(maximizingPlayer)
+      bestHeuristicValue = -Double.MAX_VALUE;
+    else
+      bestHeuristicValue = Double.MAX_VALUE;
+
     int bestMove = -1;
-    double bestHeuristicValue = -1;
     Minimax minimax = new Minimax(mySide);
 
     for(int i = 1; i < board.getNoOfHoles()+1; i++)
@@ -123,13 +130,18 @@ public class Agent
       if(child == null)
         continue;
 
-      double minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
+      double minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH);
 
-      if(minimaxVal > bestHeuristicValue)
+      if(maximizingPlayer && minimaxVal > bestHeuristicValue)
       {
         bestHeuristicValue = minimaxVal;
         bestMove = i;
       } // if
+      else if(!maximizingPlayer && minimaxVal < bestHeuristicValue)
+      {
+        bestHeuristicValue = minimaxVal;
+        bestMove = i;
+      } // else if
     } // for
 
     return new Move(mySide, bestMove);
