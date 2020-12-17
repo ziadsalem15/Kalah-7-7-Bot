@@ -1,5 +1,5 @@
 package MKAgent;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import java.io.FileWriter;
@@ -11,16 +11,13 @@ public class Minimax
   //       Add heuristics and optimise the search.
 
   public Side ourSide;
-  public int tempValue;
-  public int bestValue;
-  private static int MINIMAX_DEPTH = 10;
 
   public Minimax(Side side)
   {
     this.ourSide = side;
   }
 
-  public int advantageToSwap(Side side, Board board)
+  public int advantageToSwap(Side side, Board board, int depth)
   {
     List<Integer> indicesOfNonEmptyHoles = board.getIndicesOfNonEmptyHoles(side);
     int maxScore = Integer.MIN_VALUE;
@@ -31,7 +28,7 @@ public class Minimax
         Board chBoard = new Board(board);
         Side chSide = Kalah.makeMove(chBoard, chMove);
         Tree chTree = new Tree(chBoard, chSide);
-        int chScore = minimax(chTree, Integer.MIN_VALUE, Integer.MAX_VALUE, MINIMAX_DEPTH);
+        int chScore = minimax(chTree, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
         maxScore = Math.max(chScore, maxScore);
      }
      return maxScore;
@@ -39,6 +36,8 @@ public class Minimax
 
   public int minimax(Tree node, int alpha, int beta, int depth)
   {
+    int bestValue = 0;
+
     if(node.getChildren().isEmpty() || depth == 0)
       return (int)Math.round(new Heuristics().getHeuristicScore(node));
 
@@ -51,9 +50,9 @@ public class Minimax
         bestValue = Integer.MIN_VALUE;
 
         // checking it it has childeren
-        for(Tree child : node.getChildren())
+        for(Tree child : node.getChildren().values())
         {
-          tempValue = minimax(child, alpha, beta, depth-1);
+          int tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
           if (beta <= alpha)
@@ -66,9 +65,9 @@ public class Minimax
         bestValue = Integer.MAX_VALUE;
 
         // checking it it has childeren
-        for(Tree child : node.getChildren())
+        for(Tree child : node.getChildren().values())
         {
-          tempValue = minimax(child, alpha, beta, depth-1);
+          int tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.min(bestValue, tempValue);
           beta = Math.min(beta, bestValue);
           if (beta <= alpha)

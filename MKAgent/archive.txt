@@ -1,0 +1,82 @@
+// public static void generateChildrenLayers(Tree tree, int noOfLayers)
+// {
+//   int noOfChildren = board.getNoOfHoles();
+//
+//   if(noOfLayers == 1)
+//     for(int i = 0; i < noOfChildren; i++)
+//       tree.addChild(new Tree(board, tree.getSide().opposite()));
+//
+//   else if(noOfLayers > 1)
+//     for(int i = 0; i < noOfChildren; i++)
+//     {
+//       Tree child = new Tree(board, tree.getSide().opposite());
+//       tree.addChild(child);
+//       generateChildrenLayers(child, noOfLayers-1);
+//     } // for
+// } // generateChildren
+
+// public ArrayList<Tree> getChildrenAtDepth(int depth, Tree tree)
+// {
+//
+//   ArrayList<Tree> children = new ArrayList();
+//   if (tree.getChild(1).depth == depth)
+//   {
+//
+//     for (int i = 0; i < board.getNoOfHoles(); i++)
+//     {
+//       Tree child = tree.getChild(i+1);
+//       children.add(child);
+//     }
+//   }
+//   else
+//   {
+//
+//     for (int i = 0; i < board.getNoOfHoles(); i++)
+//     {
+//
+//       getChildrenAtDepth(depth, tree.getChild(i+1));
+//     }
+//   }
+//
+//   return children;
+// }
+
+
+// public void generateBottomLayer()
+// {
+//   if(this.children.size() == 0)
+//     for(int i = 0; i < board.getNoOfHoles(); i++)
+//     {
+//       Board temp = new Board(this.board);
+//       new Kalah(temp).makeMove(new Move(side, i+1));
+//
+//       this.addChild(new Tree(temp, side.opposite(), ));
+//     } // for
+//   else
+//   {
+//     for(Tree child : this.children)
+//       child.generateBottomLayer();
+//   }
+// } // generateBottomLayer
+
+
+// public void generateBottomLayer1(int depth)
+// {
+//   ArrayList<Tree> leaves = new ArrayList();
+//   leaves = getChildrenAtDepth(depth, this);
+//
+//   Tree leaf1 = leaves.get(1);
+//   if (leaf1.children.size() == 0)
+//   {
+//     for (Tree leaf : leaves)
+//     {
+//       for(int i = 0; i < board.getNoOfHoles(); i++)
+//       {
+//         Board temp = new Board(this.board);
+//         new Kalah(temp).makeMove(new Move(side, i+1));
+//
+//         this.addChild(new Tree(temp, side.opposite(), depth+1));
+//       } // for
+//     }
+//   }
+// } // generateBottomLayer

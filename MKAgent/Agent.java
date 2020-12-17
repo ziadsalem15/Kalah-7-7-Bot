@@ -1,5 +1,5 @@
 package MKAgent;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,7 +10,7 @@ public class Agent
   // public final int DECISION_TIME;
 
   public Board board;
-  public Kalah kalah;
+  // public Kalah kalah;
   public Side mySide;
 
   public Tree gameTree;
@@ -20,7 +20,7 @@ public class Agent
     boolean canSwap = false;
 
     board = new Board(7,7);
-    kalah = new Kalah(board);
+    // kalah = new Kalah(board);
 
     // South is the max player
     gameTree = new Tree(board, Side.SOUTH);
@@ -42,7 +42,7 @@ public class Agent
             if(isStarting)
             {
               Move optimalMove = runMinMax();
-              kalah.makeMove(board, optimalMove);
+              Kalah.makeMove(board, optimalMove);
               Main.sendMsg(Protocol.createMoveMsg(optimalMove.getHole()));
             } // if
             else
@@ -63,13 +63,15 @@ public class Agent
               gameTree.generateChildrenLayers(DEPTH);
             } // if
 
-            if(moveTurn.again && !moveTurn.end)
+            if(moveTurn.again)
             {
               if(canSwap && shouldSwap())
               {
                 mySide = mySide.opposite();
                 Main.sendMsg(Protocol.createSwapMsg());
                 canSwap = false;
+
+                Kalah.makeMove(board, new Move(mySide, moveTurn.move));
 
                 gameTree = new Tree(board, mySide);
                 gameTree.generateChildrenLayers(DEPTH);
@@ -78,19 +80,20 @@ public class Agent
               {
                 if(canSwap) canSwap = false;
 
-                kalah.makeMove(new Move(mySide.opposite(), moveTurn.move));
                 gameTree = new Tree(board, mySide);
                 gameTree.generateChildrenLayers(DEPTH);
 
                 // Make your move
                 Move nextMove = runMinMax();
 
-                kalah.makeMove(board, nextMove);
+                Kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
 
                 //gameTree = gameTree.getChild(nextMove.getHole());
               } // else
             } // if
+            else
+              Kalah.makeMove(board, new Move(mySide.opposite(), moveTurn.move));
             break;
 
           case END:
@@ -117,11 +120,11 @@ public class Agent
 
     for(int i = 1; i < board.getNoOfHoles()+1; i++)
     {
-      Board temp = board.clone();
-      if(!Kalah.isLegalMove(temp, new Move(mySide, i)))
+      Tree child = gameTree.getChild(i);
+
+      if(child == null)
         continue;
 
-      Tree child = gameTree.getChild(i);
       int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
 
       if(minimaxVal > bestHeuristicValue)
@@ -136,11 +139,9 @@ public class Agent
 
   public boolean shouldSwap()
   {
-    // Minimax minimax = new Minimax(mySide);
-    // int noSwapScore = minimax.advantageToSwap(mySide, board);
-    // int swapScore = minimax.advantageToSwap(mySide.opposite(), board);
-    // return swapScore > noSwapScore;
-
-    return false;
+    Minimax minimax = new Minimax(mySide);
+    int noSwapScore = minimax.advantageToSwap(mySide, board, DEPTH);
+    int swapScore = minimax.advantageToSwap(mySide.opposite(), board, DEPTH);
+    return swapScore > noSwapScore;
   } // shouldSwap
 } // class Agent

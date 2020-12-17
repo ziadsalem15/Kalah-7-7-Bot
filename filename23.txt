@@ -1,0 +1,3 @@
+i: 6
+bestMove: -1
+bestHeuristicValue: -1

@@ -45,23 +45,29 @@ public class Heuristics
 
     // int maxCapture = 0
     int captureCount = 0;
-    for(int i = 0; i < noOfHoles; i++)
+    for(int i = 1; i < noOfHoles+1; i++)
     {
-      int noOfSeeds = board.getSeeds(side, i+1);
+      int noOfSeeds = board.getSeeds(side, i);
       int endHole = -1;
 
       if(noOfSeeds != 0)
       {
-        noOfSeeds = noOfSeeds - (noOfHoles - (i+1));
-        if(noOfSeeds <= 0) // we are still on our side
-          endHole = noOfHoles + noOfSeeds;
-        else
-          noOfSeeds = noOfSeeds - (noOfHoles + 1);
-          if(noOfSeeds > 0) // we are back on our side
-            endHole = noOfSeeds;
+        // noOfSeeds = noOfSeeds - (noOfHoles - (i+1));
+        // if(noOfSeeds <= 0) // we are still on our side
+        //   endHole = noOfHoles + noOfSeeds;
+        // else
+        //   noOfSeeds = noOfSeeds - (noOfHoles + 1);
+        //   if(noOfSeeds > 0) // we are back on our side
+        //     endHole = noOfSeeds;
+
+        int offset = noOfSeeds%15;
+        if(offset <= noOfHoles - i)
+          endHole = i + offset;
+        else if(offset > noOfHoles*2+1-i)
+          endHole = i - 15 + offset;
       } // if
 
-      if(endHole != -1) // you ended up in your side
+      if(endHole > 0) // you ended up in your side
       {
         int remainingSeeds = board.getSeeds(side, endHole) + 1;
         if(remainingSeeds == 1) // that's a capturing oportunity
