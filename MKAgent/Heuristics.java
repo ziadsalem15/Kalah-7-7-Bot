@@ -22,13 +22,11 @@ public class Heuristics
     Board board = tree.getBoard();
     int noOfHoles =  board.getNoOfHoles();
     int numOfExtraTurn = 0;
+
     for(int hole = 1; hole < noOfHoles+1; hole++)
-    {
        if ((board.getSeeds(side, hole) % 15) == ((noOfHoles+1) - hole))
-       {
           numOfExtraTurn++;
-       }
-    }
+
     return numOfExtraTurn;
    }
 
@@ -81,7 +79,7 @@ public class Heuristics
 
   public double getHeuristicScore(Tree tree)
   {
-    double weights[] = {0.45, 0.05, -0.1, 0.1};
+    double weights[] = {1.1, 1, -0.565937, 0.7};
     double heuristicScore = getDifferenceBetweenWells(tree) * weights[0]
                            + getCapturingOportunities(tree, false) * weights[1]
                            + getCapturingOportunities(tree, true) * weights[2]

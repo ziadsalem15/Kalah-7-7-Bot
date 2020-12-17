@@ -88,8 +88,6 @@ public class Agent
 
                 Kalah.makeMove(board, nextMove);
                 Main.sendMsg(Protocol.createMoveMsg(nextMove.getHole()));
-
-                //gameTree = gameTree.getChild(nextMove.getHole());
               } // else
             } // if
             else
@@ -115,7 +113,7 @@ public class Agent
   public Move runMinMax() throws Exception
   {
     int bestMove = -1;
-    int bestHeuristicValue = -1;
+    double bestHeuristicValue = -1;
     Minimax minimax = new Minimax(mySide);
 
     for(int i = 1; i < board.getNoOfHoles()+1; i++)
@@ -125,7 +123,7 @@ public class Agent
       if(child == null)
         continue;
 
-      int minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
+      double minimaxVal = minimax.minimax(child, Integer.MIN_VALUE, Integer.MAX_VALUE, DEPTH-1);
 
       if(minimaxVal > bestHeuristicValue)
       {
@@ -140,8 +138,8 @@ public class Agent
   public boolean shouldSwap()
   {
     Minimax minimax = new Minimax(mySide);
-    int noSwapScore = minimax.advantageToSwap(mySide, board, DEPTH);
-    int swapScore = minimax.advantageToSwap(mySide.opposite(), board, DEPTH);
+    double noSwapScore = minimax.advantageToSwap(mySide, board, DEPTH);
+    double swapScore = minimax.advantageToSwap(mySide.opposite(), board, DEPTH);
     return swapScore > noSwapScore;
   } // shouldSwap
 } // class Agent

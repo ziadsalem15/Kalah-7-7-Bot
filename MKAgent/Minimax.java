@@ -17,10 +17,10 @@ public class Minimax
     this.ourSide = side;
   }
 
-  public int advantageToSwap(Side side, Board board, int depth)
+  public double advantageToSwap(Side side, Board board, int depth)
   {
     List<Integer> indicesOfNonEmptyHoles = board.getIndicesOfNonEmptyHoles(side);
-    int maxScore = Integer.MIN_VALUE;
+    double maxScore = Integer.MIN_VALUE;
 
      for(Integer index : indicesOfNonEmptyHoles)
      {
@@ -28,18 +28,18 @@ public class Minimax
         Board chBoard = new Board(board);
         Side chSide = Kalah.makeMove(chBoard, chMove);
         Tree chTree = new Tree(chBoard, chSide);
-        int chScore = minimax(chTree, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
+        double chScore = minimax(chTree, Integer.MIN_VALUE, Integer.MAX_VALUE, depth);
         maxScore = Math.max(chScore, maxScore);
      }
      return maxScore;
   }
 
-  public int minimax(Tree node, int alpha, int beta, int depth)
+  public double minimax(Tree node, double alpha, double beta, int depth)
   {
-    int bestValue = 0;
+    double bestValue = 0;
 
     if(node.getChildren().isEmpty() || depth == 0)
-      return (int)Math.round(new Heuristics().getHeuristicScore(node));
+      return new Heuristics().getHeuristicScore(node);
 
     else
     {
@@ -52,7 +52,7 @@ public class Minimax
         // checking it it has childeren
         for(Tree child : node.getChildren().values())
         {
-          int tempValue = minimax(child, alpha, beta, depth-1);
+          double tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.max(bestValue, tempValue);
           alpha = Math.max(alpha, bestValue);
           if (beta <= alpha)
@@ -67,7 +67,7 @@ public class Minimax
         // checking it it has childeren
         for(Tree child : node.getChildren().values())
         {
-          int tempValue = minimax(child, alpha, beta, depth-1);
+          double tempValue = minimax(child, alpha, beta, depth-1);
           bestValue = Math.min(bestValue, tempValue);
           beta = Math.min(beta, bestValue);
           if (beta <= alpha)
